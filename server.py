@@ -44,10 +44,10 @@ def init_prize_pool(num_players):
     global prize_pool
     prize_pool = []
     
-    # --- 🔥 修改點 1: 增加獎品數量係數 (改成 * 100) ---
+    # ---  修改點 1: 增加獎品數量係數 (改成 * 100) ---
     total_items = num_players * 100
     
-    # --- 🔥 修改點 2: 簡化獎品名稱 ---
+    # ---  修改點 2: 簡化獎品名稱 ---
     # 100分 (10%)
     for _ in range(int(total_items * 0.1)): 
         prize_pool.append({"score": 100, "name": "(100分)"})
@@ -90,7 +90,7 @@ def reset_game():
     scores = {name: 0 for name in clients.values()}
     stop_game_event.clear()
     
-    broadcast({"status": "info", "message": "🔄 遊戲已重置！等待所有玩家輸入 /ready 重新開始。"})
+    broadcast({"status": "info", "message": " 遊戲已重置！等待所有玩家輸入 /ready 重新開始。"})
     check_room_status()
 
 def game_timer_thread():
@@ -101,7 +101,7 @@ def game_timer_thread():
     # 初始化獎池
     init_prize_pool(len(clients))
 
-    start_msg = f"🏁 遊戲開始！模式：{game_mode} | 限時 {GAME_DURATION} 秒 | 獎品數量：{len(prize_pool)}"
+    start_msg = f" 遊戲開始！模式：{game_mode} | 限時 {GAME_DURATION} 秒 | 獎品數量：{len(prize_pool)}"
     broadcast({"status": "info", "message": start_msg})
     print(f"[系統] {start_msg}")
 
@@ -109,7 +109,7 @@ def game_timer_thread():
         
         # 若獎池空了，提早結束
         if not prize_pool:
-            broadcast({"status": "info", "message": "😲 獎品已被搶購一空！遊戲提早結束！"})
+            broadcast({"status": "info", "message": " 獎品已被搶購一空！遊戲提早結束！"})
             break
 
         if game_mode == 'auto':
@@ -129,7 +129,7 @@ def game_timer_thread():
         else:
             # 手動模式只報時
             if remaining_time % 10 == 0 or remaining_time <= 5:
-                broadcast({"status": "info", "message": f"⏳ 剩餘時間：{remaining_time} 秒 (剩餘獎品: {len(prize_pool)}個)"})
+                broadcast({"status": "info", "message": f" 剩餘時間：{remaining_time} 秒 (剩餘獎品: {len(prize_pool)}個)"})
 
         time.sleep(1)
         remaining_time -= 1
@@ -140,13 +140,13 @@ def game_timer_thread():
 
 def show_ranking():
     sorted_scores = sorted(scores.items(), key=lambda item: item[1], reverse=True)
-    rank_msg = "\n🏆 === 最終排行榜 === 🏆\n"
+    rank_msg = "\n === 最終排行榜 === \n"
     rank = 1
     for name, score in sorted_scores:
-        icon = "🥇" if rank == 1 else "🥈" if rank == 2 else "🥉" if rank == 3 else f"No.{rank}"
+        icon = " " if rank == 1 else " " if rank == 2 else " " if rank == 3 else f"No.{rank}"
         rank_msg += f"{icon} {name}: {score} 分\n"
         rank += 1
-    rank_msg += "=======================\n👉 輸入 /replay 再玩一次，或 /quit 離開。"
+    rank_msg += "=======================\n 輸入 /replay 再玩一次，或 /quit 離開。"
     
     broadcast({"status": "info", "message": rank_msg})
     print(rank_msg)
@@ -158,7 +158,7 @@ def process_voting_result():
     auto_votes = list(votes.values()).count('auto')
     manual_votes = list(votes.values()).count('manual')
     
-    msg = f"🗳️ 投票結束！ Auto: {auto_votes} 票 vs Manual: {manual_votes} 票。"
+    msg = f" 投票結束！ Auto: {auto_votes} 票 vs Manual: {manual_votes} 票。"
     print(f"[系統] {msg}")
     
     if auto_votes > manual_votes:
@@ -170,7 +170,7 @@ def process_voting_result():
     else:
         # 平手隨機二選一
         game_mode = random.choice(['auto', 'manual'])
-        msg += f" (⚖️ 平手！系統隨機骰出：**{game_mode}** 模式)"
+        msg += f" ( 平手！系統隨機骰出：**{game_mode}** 模式)"
     
     broadcast({"status": "info", "message": msg})
     
@@ -185,7 +185,7 @@ def check_room_status():
     if game_state == STATE_WAITING:
         if current_count >= MAX_PLAYERS:
             game_state = STATE_READY_CHECK
-            broadcast({"status": "info", "message": f"👥 人員到齊！請輸入 **/ready** 準備。"})
+            broadcast({"status": "info", "message": f" 人員到齊！請輸入 **/ready** 準備。"})
         else:
             broadcast({"status": "info", "message": f"等待玩家... ({current_count}/{MAX_PLAYERS})"})
 
@@ -193,7 +193,7 @@ def check_room_status():
         all_ready = (len(ready_players) >= len(clients)) and (len(clients) >= MAX_PLAYERS)
         if all_ready:
             game_state = STATE_VOTING
-            broadcast({"status": "info", "message": "✅ 全員準備就緒！\n🗳️ 請投票選擇模式：\n輸入 **/auto** (自動抽)\n輸入 **/manual** (手動搶)"})
+            broadcast({"status": "info", "message": " 全員準備就緒！\n 請投票選擇模式：\n輸入 **/auto** (自動抽)\n輸入 **/manual** (手動搶)"})
 
 def handle_client(conn, addr):
     global game_state, game_mode
@@ -225,14 +225,14 @@ def handle_client(conn, addr):
                         clients[conn] = username
                         scores[username] = 0
                         print(f"[加入] {username} 加入遊戲")
-                        broadcast({"status": "info", "message": f"👋 {username} 進場！"})
+                        broadcast({"status": "info", "message": f" {username} 進場！"})
                         check_room_status()
 
                     # 2. 準備 /ready
                     elif action == "ready":
                         if game_state == STATE_READY_CHECK:
                             ready_players.add(username)
-                            broadcast({"status": "info", "message": f"✅ {username} 準備好了 ({len(ready_players)}/{len(clients)})"})
+                            broadcast({"status": "info", "message": f" {username} 準備好了 ({len(ready_players)}/{len(clients)})"})
                             check_room_status()
 
                     # 3. 投票 /auto 或 /manual
@@ -243,7 +243,7 @@ def handle_client(conn, addr):
                                 continue
                             vote_val = msg_obj.get("mode")
                             votes[username] = vote_val
-                            broadcast({"status": "info", "message": f"🗳️ {username} 投給了 {vote_val} ({len(votes)}/{len(clients)})"})
+                            broadcast({"status": "info", "message": f" {username} 投給了 {vote_val} ({len(votes)}/{len(clients)})"})
                             
                             if len(votes) >= len(clients):
                                 process_voting_result()
@@ -275,7 +275,7 @@ def handle_client(conn, addr):
             del clients[conn]
             if username in votes: del votes[username]
             if username in ready_players: ready_players.remove(username)
-            broadcast({"status": "info", "message": f"🏃 {username} 離開了"})
+            broadcast({"status": "info", "message": f" {username} 離開了"})
             print(f"[離開] {username} 離線")
         conn.close()
 
@@ -295,4 +295,5 @@ def start_server():
         server.close()
 
 if __name__ == '__main__':
+
     start_server()
