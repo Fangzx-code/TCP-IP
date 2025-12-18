@@ -26,16 +26,16 @@ def receive_messages(sock):
                     content = msg.get("message", "")
 
                     if status == "welcome":
-                        print(f"\n✨ {content}")
+                        print(f"\n {content}")
                         send_action(sock, "register", {"name": MY_USERNAME})
                     elif status == "info":
-                        print(f"\n📢 {content}")
+                        print(f"\n {content}")
                     elif status == "error":
-                        print(f"\n❌ {content}")
+                        print(f"\n {content}")
                     elif status == "draw_result":
-                        print(f"🎁 恭喜！抽到了: {msg['prize']}")
+                        print(f" 恭喜！抽到了: {msg['prize']}")
                     elif status == "auto_update":
-                        print(f"⚡ {content}")
+                        print(f" {content}")
 
                     sys.stdout.write('> ')
                     sys.stdout.flush()
@@ -52,12 +52,12 @@ def send_action(sock, action, data={}):
         sock.sendall((json.dumps(payload) + '\n').encode('utf-8'))
     except: pass
 
-# --- 🔥 新增：退出時的顯示函式 ---
+# ---  新增：退出時的顯示函式 ---
 def show_exit_message():
     print("\n" + "="*40)
-    print(f"👋 再見，{MY_USERNAME}！")
+    print(f" 再見，{MY_USERNAME}！")
     print("感謝您參與這次的「多人連線搶分遊戲」。")
-    print("希望您玩得愉快！祝您期末專題順利！💯")
+    print("希望您玩得愉快！")
     print("="*40 + "\n")
     time.sleep(1) # 稍微停頓一下讓使用者看完
 
@@ -83,7 +83,7 @@ if __name__ == '__main__':
                 break
             
             elif cmd == '/help':
-                print("\n=== 📜 指令清單 ===")
+                print("\n===  指令清單 ===")
                 print("/ready   - 準備 (人齊後用)")
                 print("/auto    - 投票自動模式")
                 print("/manual  - 投票手動模式")
@@ -102,5 +102,6 @@ if __name__ == '__main__':
             show_exit_message()
             break
         except: break
+
 
     if CLIENT_SOCKET: CLIENT_SOCKET.close()
